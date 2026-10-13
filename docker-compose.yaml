@@ -1,0 +1,233 @@
+name: evento
+
+x-backend-build: &backend-build
+  context: .
+  dockerfile: Dockerfile.backend
+
+x-backend-env: &backend-env
+  DATABASE_URL: postgresql://eventoapp:evento_password@postgres:5432/eventoapp?schema=public
+  KAFKA_BROKER: kafka:9092
+  KAFKAJS_NO_PARTITIONER_WARNING: "1"
+  JWT_SECRET: dev_only_change_me
+
+x-health-node: &health-node
+  interval: 10s
+  timeout: 5s
+  retries: 12
+  start_period: 20s
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: eventoapp
+      POSTGRES_USER: eventoapp
+      POSTGRES_PASSWORD: evento_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U eventoapp -d eventoapp"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:8-alpine
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  kafka:
+    image: confluentinc/cp-kafka:7.8.0
+    ports:
+      - "9093:9093"
+    environment:
+      CLUSTER_ID: MkU3OEVBNTcwNTJENDM2Qk
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:29093
+      KAFKA_LISTENERS: PLAINTEXT://kafka:9092,CONTROLLER://kafka:29093,PLAINTEXT_HOST://0.0.0.0:9093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:9093
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+    healthcheck:
+      test: ["CMD-SHELL", "kafka-broker-api-versions --bootstrap-server kafka:9092 >/dev/null 2>&1"]
+      interval: 10s
+      timeout: 10s
+      retries: 20
+      start_period: 30s
+
+  kafka-init:
+    image: confluentinc/cp-kafka:7.8.0
+    depends_on:
+      kafka:
+        condition: service_healthy
+    command:
+      - sh
+      - -c
+      - |
+        for topic in \
+          user.registered user.login user.password-reset-requested \
+          event.created event.published event.updated event.cancelled \
+          ticket.purchased ticket.cancelled ticket.checked-in \
+          payment.completed payment.failed payment.refunded \
+          notification.send-email notification.send-push
+        do
+          kafka-topics --bootstrap-server kafka:9092 --create --if-not-exists --topic "$$topic" --partitions 1 --replication-factor 1
+        done
+
+  mailpit:
+    image: axllent/mailpit:v1.30
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+    healthcheck:
+      test: ["CMD", "/mailpit", "readyz"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  db-setup:
+    build:
+      <<: *backend-build
+      target: builder
+    environment:
+      DATABASE_URL: postgresql://eventoapp:evento_password@postgres:5432/eventoapp?schema=public
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command: sh -c "pnpm exec drizzle-kit push && pnpm run seed:showcase"
+
+  auth-service:
+    build:
+      <<: *backend-build
+      args:
+        SERVICE: auth-service
+    environment:
+      <<: *backend-env
+    ports:
+      - "3001:3001"
+    depends_on:
+      db-setup:
+        condition: service_completed_successfully
+      kafka-init:
+        condition: service_completed_successfully
+    healthcheck:
+      <<: *health-node
+      test: ["CMD-SHELL", "node -e \"fetch('http://127.0.0.1:3001/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))\""]
+
+  events-service:
+    build:
+      <<: *backend-build
+      args:
+        SERVICE: events-service
+    environment:
+      <<: *backend-env
+    ports:
+      - "3003:3003"
+    depends_on:
+      db-setup:
+        condition: service_completed_successfully
+      kafka-init:
+        condition: service_completed_successfully
+    healthcheck:
+      <<: *health-node
+      test: ["CMD-SHELL", "node -e \"fetch('http://127.0.0.1:3003/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))\""]
+
+  tickets-service:
+    build:
+      <<: *backend-build
+      args:
+        SERVICE: tickets-service
+    environment:
+      <<: *backend-env
+    ports:
+      - "3004:3004"
+    depends_on:
+      db-setup:
+        condition: service_completed_successfully
+      kafka-init:
+        condition: service_completed_successfully
+    healthcheck:
+      <<: *health-node
+      test: ["CMD-SHELL", "node -e \"fetch('http://127.0.0.1:3004/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))\""]
+
+  notifications-service:
+    build:
+      <<: *backend-build
+      args:
+        SERVICE: notifications-service
+    environment:
+      KAFKA_BROKER: kafka:9092
+      KAFKAJS_NO_PARTITIONER_WARNING: "1"
+      SMTP_HOST: mailpit
+      SMTP_PORT: 1025
+    ports:
+      - "3006:3006"
+    depends_on:
+      kafka-init:
+        condition: service_completed_successfully
+      mailpit:
+        condition: service_healthy
+    healthcheck:
+      <<: *health-node
+      test: ["CMD-SHELL", "node -e \"fetch('http://127.0.0.1:3006/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))\""]
+
+  api-gateway:
+    build:
+      <<: *backend-build
+      args:
+        SERVICE: api-gateway
+    environment:
+      AUTH_SERVICE_URL: http://auth-service:3001
+      EVENTS_SERVICE_URL: http://events-service:3003
+      TICKETS_SERVICE_URL: http://tickets-service:3004
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      JWT_SECRET: dev_only_change_me
+    ports:
+      - "3000:3000"
+    depends_on:
+      auth-service:
+        condition: service_healthy
+      events-service:
+        condition: service_healthy
+      tickets-service:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      <<: *health-node
+      test: ["CMD-SHELL", "node -e \"fetch('http://127.0.0.1:3000/').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))\""]
+
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_API_BASE_URL: http://localhost:3000
+    environment:
+      NEXT_PUBLIC_API_BASE_URL: http://localhost:3000
+    ports:
+      - "4000:4000"
+    depends_on:
+      api-gateway:
+        condition: service_healthy
+    healthcheck:
+      <<: *health-node
+      test: ["CMD-SHELL", "node -e \"fetch('http://127.0.0.1:4000/events').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))\""]
+
+volumes:
+  postgres-data:
