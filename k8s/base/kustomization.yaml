@@ -1,0 +1,37 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: evento
+
+resources:
+  - namespace.yaml
+  - config.yaml
+  - postgres.yaml
+  - redis.yaml
+  - kafka.yaml
+  - mailpit.yaml
+  - jobs.yaml
+  - services.yaml
+
+images:
+  - name: evento/api-gateway
+    newName: evento-api-gateway
+    newTag: latest
+  - name: evento/auth-service
+    newName: evento-auth-service
+    newTag: latest
+  - name: evento/events-service
+    newName: evento-events-service
+    newTag: latest
+  - name: evento/tickets-service
+    newName: evento-tickets-service
+    newTag: latest
+  - name: evento/notifications-service
+    newName: evento-notifications-service
+    newTag: latest
+  - name: evento/client
+    newName: evento-client
+    newTag: latest
+  - name: evento/db-setup
+    newName: evento-db-setup
+    newTag: latest

@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: evento-config
+  labels:
+    app.kubernetes.io/name: evento
+data:
+  KAFKA_BROKER: kafka:9092
+  KAFKAJS_NO_PARTITIONER_WARNING: "1"
+  REDIS_HOST: redis
+  REDIS_PORT: "6379"
+  SMTP_HOST: mailpit
+  SMTP_PORT: "1025"
+  AUTH_SERVICE_URL: http://auth-service:3001
+  EVENTS_SERVICE_URL: http://events-service:3003
+  TICKETS_SERVICE_URL: http://tickets-service:3004
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: evento-secret
+  labels:
+    app.kubernetes.io/name: evento
+type: Opaque
+stringData:
+  DATABASE_URL: postgresql://eventoapp:evento_password@postgres:5432/eventoapp?schema=public
+  JWT_SECRET: dev_only_change_me
+  POSTGRES_DB: eventoapp
+  POSTGRES_USER: eventoapp
+  POSTGRES_PASSWORD: evento_password

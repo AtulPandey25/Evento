@@ -1,0 +1,69 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: kafka-init
+  labels:
+    app.kubernetes.io/name: evento
+    app.kubernetes.io/component: kafka-init
+spec:
+  backoffLimit: 6
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: evento
+        app.kubernetes.io/component: kafka-init
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - name: kafka-init
+          image: confluentinc/cp-kafka:7.8.0
+          imagePullPolicy: IfNotPresent
+          command:
+            - sh
+            - -c
+            - |
+              until kafka-broker-api-versions --bootstrap-server kafka:9092 >/dev/null 2>&1; do
+                sleep 5
+              done
+              for topic in \
+                user.registered user.login user.password-reset-requested \
+                event.created event.published event.updated event.cancelled \
+                ticket.purchased ticket.cancelled ticket.checked-in \
+                payment.completed payment.failed payment.refunded \
+                notification.send-email notification.send-push
+              do
+                kafka-topics --bootstrap-server kafka:9092 --create --if-not-exists --topic "$topic" --partitions 1 --replication-factor 1
+              done
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: db-setup
+  labels:
+    app.kubernetes.io/name: evento
+    app.kubernetes.io/component: db-setup
+spec:
+  backoffLimit: 6
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: evento
+        app.kubernetes.io/component: db-setup
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - name: db-setup
+          image: evento/db-setup
+          imagePullPolicy: IfNotPresent
+          envFrom:
+            - secretRef:
+                name: evento-secret
+          command:
+            - sh
+            - -c
+            - |
+              until node -e "require('net').connect(5432, 'postgres').on('connect', function(){process.exit(0)}).on('error', function(){process.exit(1)})"; do
+                sleep 5
+              done
+              pnpm exec drizzle-kit push
+              pnpm run seed:showcase
