@@ -1,0 +1,53 @@
+name: Evento CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - master
+
+permissions:
+  contents: read
+
+concurrency:
+  group: evento-ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: Product, backend, and UI verification
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: |
+            pnpm-lock.yaml
+            client/pnpm-lock.yaml
+
+      - name: Install backend dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install client dependencies
+        run: pnpm -C client install --frozen-lockfile
+
+      - name: Install Playwright browser
+        run: pnpm -C client exec playwright install --with-deps chromium
+
+      - name: Run product, integration, and end-to-end checks
+        env:
+          NEXT_PUBLIC_API_BASE_URL: http://127.0.0.1:3999
+        run: pnpm verify
