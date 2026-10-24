@@ -388,14 +388,14 @@ export function OrganizerWorkspace({
       </div>
 
       <div className="space-y-4">
-        <div className="rounded-md bg-zinc-950 p-5 text-white">
+        <div className="rounded-xl border border-blue-900/40 bg-gradient-to-br from-[#0a1628] via-[#0f2444] to-[#14325c] p-6 text-white shadow-xl shadow-blue-950/20">
           <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
             <div>
-              <div className="text-sm font-medium uppercase tracking-[0.16em] text-zinc-400">
+              <div className="text-sm font-medium uppercase tracking-[0.16em] text-blue-300">
                 Organizer workspace
               </div>
               <h2 className="mt-2 text-2xl font-semibold">Listings and sales readiness</h2>
-              <p className="mt-2 max-w-2xl text-sm leading-6 text-zinc-300">
+              <p className="mt-2 max-w-2xl text-sm leading-6 text-blue-100/80">
                 Create listings, publish ready events, and keep the entry desk in sync.
               </p>
             </div>
@@ -411,20 +411,20 @@ export function OrganizerWorkspace({
             </Button>
           </div>
           <div className="mt-5 grid gap-3 sm:grid-cols-3">
-            <div className="rounded-md border border-white/10 bg-white/5 p-4">
+            <div className="rounded-lg border border-blue-800/40 bg-blue-950/40 p-4">
               <div className="text-2xl font-semibold">{publishedCount}</div>
-              <div className="mt-1 text-sm text-zinc-300">published</div>
+              <div className="mt-1 text-sm text-blue-200/80">published</div>
             </div>
-            <div className="rounded-md border border-white/10 bg-white/5 p-4">
+            <div className="rounded-lg border border-blue-800/40 bg-blue-950/40 p-4">
               <div className="text-2xl font-semibold">{draftCount}</div>
-              <div className="mt-1 text-sm text-zinc-300">drafts</div>
+              <div className="mt-1 text-sm text-blue-200/80">drafts</div>
             </div>
-            <div className="rounded-md border border-white/10 bg-white/5 p-4">
+            <div className="rounded-lg border border-blue-800/40 bg-blue-950/40 p-4">
               <div className="flex items-center gap-2 text-2xl font-semibold">
                 <Users className="size-5 text-zinc-300" />
                 {totalCapacity}
               </div>
-              <div className="mt-1 text-sm text-zinc-300">total seats</div>
+              <div className="mt-1 text-sm text-blue-200/80">total seats</div>
             </div>
           </div>
         </div>

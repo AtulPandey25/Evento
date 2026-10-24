@@ -212,11 +212,11 @@ export function EventDetailCheckout({ eventId }: { eventId: string }) {
                 </p>
               </div>
 
-              <div className="mt-5 rounded-md bg-zinc-950 p-4 text-white">
-                <div className="text-xs font-medium uppercase tracking-[0.16em] text-zinc-400">
+              <div className="mt-5 rounded-xl border border-blue-900/40 bg-gradient-to-br from-[#0a1628] via-[#0f2444] to-[#14325c] p-5 text-white shadow-lg shadow-blue-950/20">
+                <div className="text-xs font-medium uppercase tracking-[0.16em] text-blue-300">
                   You&apos;re booking
                 </div>
-                <div className="mt-2 font-semibold">{event.title}</div>
+                <div className="mt-2 font-semibold text-lg">{event.title}</div>
                 <div className="mt-3 flex flex-wrap gap-2">
                   <Badge tone="blue">{eventCategory}</Badge>
                   {availability?.isFillingFast && (

@@ -118,7 +118,7 @@ export function RegisterForm({
                         aria-pressed={field.value === option.value}
                         className={
                           field.value === option.value
-                            ? 'rounded-md border border-zinc-950 bg-zinc-950 p-3 text-left text-white transition'
+                            ? 'rounded-md border border-blue-900 bg-gradient-to-br from-[#0a1628] to-[#14325c] p-3 text-left text-white shadow-sm transition'
                             : 'rounded-md border border-zinc-200 bg-white p-3 text-left text-zinc-950 transition hover:border-zinc-400'
                         }
                         key={option.value}

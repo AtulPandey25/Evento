@@ -69,7 +69,7 @@ export function EventoShell({
                 <Link
                   className={cn(
                     'inline-flex h-9 items-center justify-center gap-2 rounded-md px-3 text-sm font-medium text-zinc-500 transition hover:bg-zinc-100 hover:text-zinc-950',
-                    view === 'ops' && 'bg-zinc-950 text-white hover:bg-zinc-950 hover:text-white',
+                    view === 'ops' && 'bg-blue-600 text-white hover:bg-blue-700 hover:text-white',
                   )}
                   href="/ops"
                 >
@@ -91,7 +91,7 @@ export function EventoShell({
                   className={cn(
                     'inline-flex h-9 items-center justify-center gap-2 whitespace-nowrap rounded-md px-3 text-sm font-medium transition',
                     view === item.id
-                      ? 'bg-zinc-950 text-white'
+                      ? 'bg-blue-600 text-white shadow-xs'
                       : 'text-zinc-600 hover:bg-zinc-100 hover:text-zinc-950',
                   )}
                 >

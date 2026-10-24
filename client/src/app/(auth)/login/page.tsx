@@ -42,7 +42,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
           <div
             className={
               isOrganizerMode
-                ? 'rounded-md border border-zinc-950 bg-zinc-950 p-3 text-white'
+                ? 'rounded-md border border-blue-900 bg-gradient-to-br from-[#0a1628] to-[#14325c] p-3 text-white shadow-sm'
                 : 'rounded-md border border-zinc-200 bg-zinc-50 p-3'
             }
           >
@@ -51,7 +51,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
             <p
               className={
                 isOrganizerMode
-                  ? 'mt-1 text-xs leading-5 text-zinc-300'
+                  ? 'mt-1 text-xs leading-5 text-blue-200'
                   : 'mt-1 text-xs leading-5 text-zinc-600'
               }
             >
