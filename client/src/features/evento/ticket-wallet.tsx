@@ -230,19 +230,19 @@ export function TicketWallet({
                     </div>
                   )}
                 </div>
-                <div className="flex flex-col items-start justify-between border-t border-dashed border-blue-300/30 bg-gradient-to-b from-[#0a1628] via-[#0f2444] to-[#14325c] p-5 text-white md:border-l md:border-t-0">
+                <div className="flex flex-col items-start justify-between border-t border-dashed border-white/20 theme-hero-box p-5 md:border-l md:border-t-0">
                   <div className="w-full">
                     <div className="flex items-center justify-between gap-3">
-                      <div className="text-xs uppercase tracking-[0.18em] text-blue-300">
+                      <div className="text-xs uppercase tracking-[0.18em] theme-hero-muted">
                         Admission pass
                       </div>
-                      <Ticket className="size-4 text-blue-300" />
+                      <Ticket className="size-4 theme-hero-muted" />
                     </div>
                     <div
                       aria-label={`Entry code ${ticket.ticketCode}`}
-                      className="mt-3 rounded-md border border-blue-800/40 bg-blue-950/60 p-3"
+                      className="mt-3 rounded-md theme-hero-subcard p-3"
                     >
-                      <div className="text-xs text-blue-300">Entry code</div>
+                      <div className="text-xs theme-hero-muted">Entry code</div>
                       <div className="mt-1 break-all font-mono text-2xl font-semibold tracking-wider">
                         {ticket.ticketCode}
                       </div>
@@ -250,7 +250,7 @@ export function TicketWallet({
                   </div>
                   <div className="mt-5">
                     <TicketQrCode value={ticket.ticketCode} />
-                    <div className="mt-3 max-w-40 text-xs leading-5 text-blue-200/80">
+                    <div className="mt-3 max-w-40 text-xs leading-5 theme-hero-muted">
                       Scan the QR or enter the code at the venue gate.
                     </div>
                   </div>

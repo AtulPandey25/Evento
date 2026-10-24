@@ -125,3 +125,124 @@
     @apply bg-background font-sans text-foreground antialiased;
   }
 }
+
+/* ==========================================================================
+   EVENTO SINGLE-LINE THEME CONTROLLER
+   Change the theme in ONE place by setting data-theme in layout.tsx:
+     data-theme="slate"   -> Clean Titanium & Charcoal (Linear/Apple style)
+     data-theme="violet"  -> Royal Midnight Violet (Default - Trendy Luma style)
+     data-theme="emerald" -> Deep Forest Emerald (Luxury aesthetic)
+     data-theme="amber"   -> Warm Obsidian Amber (Concert aesthetic)
+     data-theme="crimson" -> Midnight Crimson (Vibrant live event aesthetic)
+   ========================================================================== */
+
+:root, [data-theme="black"] {
+  --hero-bg: #09090b;
+  --hero-border: rgba(255, 255, 255, 0.12);
+  --hero-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+  --hero-badge-bg: rgba(255, 255, 255, 0.1);
+  --hero-badge-border: rgba(255, 255, 255, 0.15);
+  --hero-badge-text: #f4f4f5;
+  --hero-text-muted: #a1a1aa;
+  --hero-subcard-bg: rgba(255, 255, 255, 0.05);
+  --hero-subcard-border: rgba(255, 255, 255, 0.1);
+  --hero-accent: #18181b;
+  --hero-accent-hover: #27272a;
+}
+
+[data-theme="violet"] {
+  --hero-bg: linear-gradient(135deg, #130924 0%, #241142 50%, #0d0619 100%);
+  --hero-border: rgba(192, 132, 252, 0.22);
+  --hero-shadow: 0 20px 30px -10px rgba(109, 40, 217, 0.25);
+  --hero-badge-bg: rgba(168, 85, 247, 0.16);
+  --hero-badge-border: rgba(192, 132, 252, 0.3);
+  --hero-badge-text: #f3e8ff;
+  --hero-text-muted: #d8b4fe;
+  --hero-subcard-bg: rgba(255, 255, 255, 0.05);
+  --hero-subcard-border: rgba(192, 132, 252, 0.18);
+  --hero-accent: #8b5cf6;
+  --hero-accent-hover: #7c3aed;
+}
+
+[data-theme="slate"] {
+  --hero-bg: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #090e17 100%);
+  --hero-border: rgba(148, 163, 184, 0.2);
+  --hero-shadow: 0 20px 30px -10px rgba(15, 23, 42, 0.35);
+  --hero-badge-bg: rgba(255, 255, 255, 0.08);
+  --hero-badge-border: rgba(255, 255, 255, 0.15);
+  --hero-badge-text: #e2e8f0;
+  --hero-text-muted: #94a3b8;
+  --hero-subcard-bg: rgba(255, 255, 255, 0.05);
+  --hero-subcard-border: rgba(255, 255, 255, 0.12);
+  --hero-accent: #3b82f6;
+  --hero-accent-hover: #2563eb;
+}
+
+[data-theme="emerald"] {
+  --hero-bg: linear-gradient(135deg, #051d14 0%, #0c3827 50%, #03140d 100%);
+  --hero-border: rgba(52, 211, 153, 0.22);
+  --hero-shadow: 0 20px 30px -10px rgba(5, 150, 105, 0.25);
+  --hero-badge-bg: rgba(16, 185, 129, 0.16);
+  --hero-badge-border: rgba(52, 211, 153, 0.3);
+  --hero-badge-text: #a7f3d0;
+  --hero-text-muted: #6ee7b7;
+  --hero-subcard-bg: rgba(255, 255, 255, 0.05);
+  --hero-subcard-border: rgba(52, 211, 153, 0.18);
+  --hero-accent: #10b981;
+  --hero-accent-hover: #059669;
+}
+
+[data-theme="amber"] {
+  --hero-bg: linear-gradient(135deg, #1f140a 0%, #301f10 50%, #140c06 100%);
+  --hero-border: rgba(251, 191, 36, 0.22);
+  --hero-shadow: 0 20px 30px -10px rgba(217, 119, 6, 0.25);
+  --hero-badge-bg: rgba(245, 158, 11, 0.16);
+  --hero-badge-border: rgba(251, 191, 36, 0.3);
+  --hero-badge-text: #fde68a;
+  --hero-text-muted: #fcd34d;
+  --hero-subcard-bg: rgba(255, 255, 255, 0.05);
+  --hero-subcard-border: rgba(251, 191, 36, 0.18);
+  --hero-accent: #f59e0b;
+  --hero-accent-hover: #d97706;
+}
+
+[data-theme="crimson"], [data-theme="red"] {
+  --hero-bg: linear-gradient(135deg, #20080f 0%, #380f1b 50%, #15050a 100%);
+  --hero-border: rgba(251, 113, 133, 0.22);
+  --hero-shadow: 0 20px 30px -10px rgba(225, 29, 72, 0.25);
+  --hero-badge-bg: rgba(244, 63, 94, 0.16);
+  --hero-badge-border: rgba(251, 113, 133, 0.3);
+  --hero-badge-text: #fecdd3;
+  --hero-text-muted: #fda4af;
+  --hero-subcard-bg: rgba(255, 255, 255, 0.05);
+  --hero-subcard-border: rgba(251, 113, 133, 0.18);
+  --hero-accent: #f43f5e;
+  --hero-accent-hover: #e11d48;
+}
+
+.theme-hero-box {
+  background: var(--hero-bg);
+  border: 1px solid var(--hero-border);
+  box-shadow: var(--hero-shadow);
+  color: #ffffff;
+}
+
+.theme-hero-badge {
+  background: var(--hero-badge-bg);
+  border: 1px solid var(--hero-badge-border);
+  color: var(--hero-badge-text);
+}
+
+.theme-hero-muted {
+  color: var(--hero-text-muted);
+}
+
+.theme-hero-subcard {
+  background: var(--hero-subcard-bg);
+  border: 1px solid var(--hero-subcard-border);
+}
+
+.theme-hero-active-pill {
+  background: var(--hero-accent);
+  color: #ffffff;
+}

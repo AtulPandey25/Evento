@@ -81,21 +81,21 @@ export function CustomerMarketplace({
 
   return (
     <section className="space-y-5">
-      <div className="overflow-hidden rounded-xl border border-blue-900/40 bg-gradient-to-br from-[#0a1628] via-[#0f2444] to-[#14325c] text-white shadow-xl shadow-blue-950/20">
+      <div className="overflow-hidden rounded-xl theme-hero-box">
         <div className="grid gap-6 p-5 lg:grid-cols-[1fr_420px] md:p-7">
           <div>
-            <div className="inline-flex items-center gap-2 rounded-md border border-blue-400/20 bg-blue-500/20 px-3 py-1 text-xs font-medium uppercase tracking-[0.16em] text-blue-200">
+            <div className="inline-flex items-center gap-2 rounded-md theme-hero-badge px-3 py-1 text-xs font-medium uppercase tracking-[0.16em]">
               <Sparkles className="size-3.5" />
               Now booking
             </div>
             <h2 className="mt-4 max-w-2xl text-3xl font-semibold leading-tight md:text-4xl">
               Book live shows, workshops, food nights, and founder rooms.
             </h2>
-            <p className="mt-3 max-w-2xl text-sm leading-6 text-blue-100/80">
+            <p className="mt-3 max-w-2xl text-sm leading-6 theme-hero-muted">
               Pick a city, compare dates, check remaining seats, and confirm your
               ticket code from a focused event checkout.
             </p>
-            <label className="mt-5 flex max-w-xl items-center gap-2 rounded-lg bg-white p-2 text-zinc-950 shadow-sm focus-within:ring-2 focus-within:ring-blue-400">
+            <label className="mt-5 flex max-w-xl items-center gap-2 rounded-lg bg-white p-2 text-zinc-950 shadow-sm">
               <Search className="ml-2 size-4 text-zinc-500" />
               <span className="sr-only">Search events</span>
               <input
@@ -114,8 +114,8 @@ export function CustomerMarketplace({
                   className={cn(
                     'rounded-md border px-3 py-1.5 text-sm transition',
                     selectedCategory === category
-                      ? 'border-white bg-white font-semibold text-blue-950 shadow-xs'
-                      : 'border-blue-700/40 bg-blue-950/40 text-blue-100 hover:bg-blue-900/50 hover:text-white',
+                      ? 'border-white bg-white font-semibold text-zinc-950 shadow-xs'
+                      : 'theme-hero-subcard theme-hero-muted hover:text-white',
                   )}
                   key={category}
                   onClick={() => setSelectedCategory(category)}
@@ -128,7 +128,7 @@ export function CustomerMarketplace({
           </div>
           <div className="min-w-0">
             {featuredEvent ? (
-              <div className="overflow-hidden rounded-lg border border-blue-700/40 bg-blue-950/40 p-3 shadow-inner">
+              <div className="overflow-hidden rounded-lg theme-hero-subcard p-3 shadow-inner">
                 <EventPoster featured event={featuredEvent} index={0} />
                 <div className="pt-4">
                   <div className="flex flex-wrap items-center gap-2">
@@ -140,7 +140,7 @@ export function CustomerMarketplace({
                       </Badge>
                     )}
                   </div>
-                  <div className="mt-3 flex flex-wrap gap-x-4 gap-y-2 text-sm text-blue-100/80">
+                  <div className="mt-3 flex flex-wrap gap-x-4 gap-y-2 text-sm theme-hero-muted">
                     <span className="inline-flex items-center gap-1.5">
                       <Clock3 className="size-4" />
                       {formatDay(featuredEvent.date).month} {formatDay(featuredEvent.date).day}
@@ -164,17 +164,17 @@ export function CustomerMarketplace({
               </div>
             ) : (
               <div className="grid content-end gap-3 sm:grid-cols-3 lg:grid-cols-1">
-                <div className="rounded-lg border border-blue-700/40 bg-blue-950/40 p-4">
+                <div className="rounded-lg theme-hero-subcard p-4">
                   <div className="text-2xl font-semibold">{publishedEvents.length}</div>
-                  <div className="mt-1 text-sm text-blue-200/80">events on sale</div>
+                  <div className="mt-1 text-sm theme-hero-muted">events on sale</div>
                 </div>
-                <div className="rounded-lg border border-blue-700/40 bg-blue-950/40 p-4">
+                <div className="rounded-lg theme-hero-subcard p-4">
                   <div className="text-2xl font-semibold">{marketplaceCapacity}</div>
-                  <div className="mt-1 text-sm text-blue-200/80">listed seats</div>
+                  <div className="mt-1 text-sm theme-hero-muted">listed seats</div>
                 </div>
-                <div className="rounded-lg border border-blue-700/40 bg-blue-950/40 p-4">
+                <div className="rounded-lg theme-hero-subcard p-4">
                   <div className="text-2xl font-semibold">Instant</div>
-                  <div className="mt-1 text-sm text-blue-200/80">ticket codes</div>
+                  <div className="mt-1 text-sm theme-hero-muted">ticket codes</div>
                 </div>
               </div>
             )}
